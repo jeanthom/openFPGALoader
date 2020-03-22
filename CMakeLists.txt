@@ -67,6 +67,7 @@ set(OPENFPGALOADER_SOURCE
 	src/ftdispi.cpp
 	src/altera.cpp
 	src/bitparser.cpp
+	src/dirtyjtag.cpp
 )
 
 set(OPENFPGALOADER_HEADERS
@@ -95,6 +96,7 @@ set(OPENFPGALOADER_HEADERS
 	src/ftdispi.hpp
 	src/lattice.hpp
 	src/latticeBitParser.hpp
+	src/dirtyjtag.hpp
 )
 
 add_executable(openFPGALoader

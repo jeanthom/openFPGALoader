@@ -29,6 +29,7 @@
 #include "ftdipp_mpsse.hpp"
 #include "ftdiJtagBitbang.hpp"
 #include "ftdiJtagMPSSE.hpp"
+#include "dirtyjtag.hpp"
 
 using namespace std;
 
@@ -92,12 +93,22 @@ Jtag::~Jtag()
 void Jtag::init_internal(cable_t &cable, const string &dev,
 	const jtag_pins_conf_t *pin_conf, uint32_t clkHZ)
 {
-	if (cable.type == MODE_FTDI_BITBANG) {
+	switch (cable.type) {
+	case MODE_FTDI_BITBANG:
 		if (pin_conf == NULL)
 			throw std::exception();
 		_jtag = new FtdiJtagBitBang(cable.config, pin_conf, dev, clkHZ, _verbose);
-	} else {
+		break;
+	case MODE_FTDI_SERIAL:
 		_jtag = new FtdiJtagMPSSE(cable.config, dev, clkHZ, _verbose);
+		break;
+	case MODE_CUSTOM:
+		_jtag = new DirtyJtag(clkHZ, _verbose);
+		break;
+	default:
+		fprintf(stderr, "Unsupported cable type, exiting!\n");
+		exit(1);
+		break;
 	}
 
 	_tms_buffer = (unsigned char *)malloc(sizeof(unsigned char) * _tms_buffer_size);
